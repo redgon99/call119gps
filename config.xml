@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.call119gps" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.call119gps" version="1.9.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>강원119신고</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        119신고자의 위치정보를 상황실에 전송
     </description>
     <author email="redgon999@gmail.com" href="http://phonegap.com">
-        119신고자의 위치정보를 상황실에 전송
+        redgon99
     </author>
     <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
