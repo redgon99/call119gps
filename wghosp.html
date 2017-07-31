@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>의료정보보기</title>
+<meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_jXQ_1DZ1EHwam8xBI95g8Qq1hcOQNbI" async defer></script>
+<script src="js/gethos.js"></script>
+<script>
+var map; 
+var marker;
+var haddr1 = localStorage.getItem("staddr1"); 
+var haddr2 = localStorage.getItem("staddr2");
+var hlat = localStorage.getItem("lat");
+var hlon = localStorage.getItem("lon");
+var divlvl = localStorage.setItem("divlvl",'DRG');
+localStorage.setItem("diameter",0.5);
+
+function diameter(str,str2) {
+  localStorage.setItem("diameter" , str);
+  document.getElementById('dmTitle').innerHTML = '(' + str2 +')';
+  document.getElementById('diameters').style.display = 'none';
+  //alert(str)
+  //initData();
+}
+
+function openCity(evt, cityName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+    }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " w3-red";
+}
+
+function opendiameter() {
+  document.getElementById('diameters').style.display = '';
+}
+
+
+function divlvll(str,str2){
+  var divlvl = localStorage.setItem("divlvl" , str);
+  document.getElementById('divcls').style.display = "none";
+  if(str != 'DRG' || str!='ER'){
+    document.getElementById('grd_sub').innerHTML = '('+str2+')';
+  }
+  if(str == 'ER' || str == 'DRG'){
+    document.getElementById('grd_sub').innerHTML = ''; 
+  }
+  initData();
+}
+
+function hsearch(){
+  var stxt = document.getElementById('stxt').value;
+  if(stxt == ''){
+    alert('검색어를 입력해주세요');
+    return;
+  }
+  localStorage.setItem("diameter",50);
+  localStorage.setItem("stext",stxt);
+  initData();
+
+  document.getElementById('sBtn').style.display = "none";
+  document.getElementById('cBtn').style.display = "none";
+  document.getElementById('stxt').style.value = "";
+  document.getElementById('stxt').style.display = "none";
+  document.getElementById('ER').style.display = "";
+  document.getElementById('GRD').style.display = "";
+  document.getElementById('DRG').style.display = "";
+  document.getElementById('sIcon').style.display = "";
+}
+
+function showBtn(){
+  document.getElementById('stxt').style.width = "35%";
+  document.getElementById('stxt').style.display = "";
+  document.getElementById('sBtn').style.display = "";
+  document.getElementById('cBtn').style.display = "";
+  document.getElementById('ER').style.display = "none";
+  document.getElementById('GRD').style.display = "none";
+  document.getElementById('DRG').style.display = "none";
+  document.getElementById('sIcon').style.display = "none";
+}
+function hcancel(){
+  document.getElementById('stxt').value = "";
+  document.getElementById('stxt').style.display = "none";
+  document.getElementById('sBtn').style.display = "none";
+  document.getElementById('cBtn').style.display = "none";
+  document.getElementById('ER').style.display = "";
+  document.getElementById('GRD').style.display = "";
+  document.getElementById('DRG').style.display = "";
+  document.getElementById('sIcon').style.display = "";
+}
+</script>
+
+<style type="text/css">
+*, #divcls {
+  margin: 0px;
+  padding: 0px;
+}
+.menuItem, #ER,#dropDM,#DRG,#GRD,#sIcon,#stxt,#sBtn,#cBtn,#spinContainer {
+  padding-top: 7px;
+  padding-right: 7px;
+  padding-bottom: 7px;
+  padding-left: 7px;
+  font-size: 17px;
+}
+html, body { 
+  height: 100%;
+  color:#666666;
+}
+#map_canvas {
+  width:100%;
+  height:80%;
+}
+
+</style>
+
+<body bgcolor="white" text="black" link="blue" vlink="purple" alink="red">
+
+<div class="w3-bar w3-dark-grey">
+
+  <div class="w3-dropdown-hover">
+    <p id="dropDM" class="w3-button" onclick="opendiameter()"><i class="fa fa-sort-down">반경</i><sapn id="dmTitle"></sapn></p>
+    <div id="diameters" class="w3-dropdown-content w3-bar-block w3-card-4 ">
+      <p onclick="diameter(this.id, this.innerHTML)" id="0.3" name="0.3" class="w3-bar-item tablink2">300m</p>
+      <p onclick="diameter(this.id, this.innerHTML)" id="0.5" name="0.5" class="w3-bar-item tablink2">500m</p>
+      <p onclick="diameter(this.id, this.innerHTML)" id="1" name="1" class="w3-bar-item tablink2">1Km</p>
+      <p onclick="diameter(this.id, this.innerHTML)" id="3" name="3" class="w3-bar-item tablink2">3Km</p>
+      <p onclick="diameter(this.id, this.innerHTML)" id="5" name="5" class="w3-bar-item tablink2">5Km</p>
+    </div>
+  </div>
+
+  <p id="ER" class="w3-bar-item tablink menuItem" onclick="divlvll(this.id),openCity(event,'ER')">응급실</p>
+  <p id="GRD" class="w3-bar-item tablink " onclick="openCity(event,'divcls')"><i class="fa fa-sort-down"></i>병의원<span id="grd_sub"></span></p>
+  <p id="DRG" class="w3-bar-item tablink " onclick="divlvll(this.id),openCity(event,'DRG')">약국</p>
+  <p id="sIcon" class="w3-bar-item w3-button" onclick="showBtn()"><i class="fa fa-search"></i></p>
+  <input id="stxt" type="text" class="w3-bar-item w3-input w3-white" style="display:none" placeholder="검색..">
+  <button id="sBtn" class="w3-bar-item w3-green" style="display:none" onclick="hsearch()">찾기</button>
+  <button id="cBtn" class="w3-bar-item w3-red" style="display:none" onclick="hcancel()">취소</button>
+  <p id="spinContainer" class="w3-bar-item w3-button" ><i id="spinIcon" class="fa fa-spinner fa-spin" style="font-size:20px"></i>
+
+  <div id="divcls" class="w3-container w3-border city" style="display:none">
+    <div class="w3-bar w3-dark-grey w3-samll" >
+      <p id="A" class="w3-bar-item" onclick="divlvll(this.id, '종합병원')">종합병원</p>
+      <p id="B" class="w3-bar-item" onclick="divlvll(this.id,'병원')">병원</p>
+      <p id="R" class="w3-bar-item " onclick="divlvll(this.id,'보건소')">보건소</p>
+      <p id="C" class="w3-bar-item " onclick="divlvll(this.id, '의원')">의원</p>
+      <p id="E" class="w3-bar-item " onclick="divlvll(this.id, '한방병원')">한방병원</p>
+      <p id="G" class="w3-bar-item " onclick="divlvll(this.id, '한의원')">한의원</p>
+      <p id="M" class="w3-bar-item " onclick="divlvll(this.id, '치과병원')">치과병원</p>
+      <p id="N" class="w3-bar-item " onclick="divlvll(this.id, '치과의원')">치과의원</p>
+    </div>
+  </div>
+
+  <div id="drg" class="w3-container w3-border city" style="display:none">
+  </div>
+  <div id="er" class="w3-container w3-border city" style="display:none">
+  </div>
+
+</div>
+
+<div id="hosTable"></div>
+<div id="map_canvas"></div>
+</body>
+<script>
+  document.getElementById('DRG').classList.add('w3-red');
+  document.getElementById('dmTitle').innerHTML = '(500m)';
+  initData();
+</script>
+</html>

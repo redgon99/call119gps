@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<title id="toptitle">강원119신고앱</title>
+<meta name="viewport" charset="utf-8" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="cordova.js"></script>
+<script src="js/index.js"></script>
+<script src="js/getweather.js"></script>
+<script src="js/getdust.js"></script>
+<style>
+*,#maincontainer {
+    margin: 0px;
+    padding: 0px;
+}
+html, body { 
+height: 100%;
+color:#666666;
+}
+.float_style {
+    float: left;
+}
+
+#title {
+    text-align:center;
+    font-size:large;
+    color:#00FFFF;
+    display:table;  
+    height:6%;
+    width:100%;
+    border:3px;
+    background: -webkit-linear-gradient(#852126, #F00); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#852126, #F00); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#852126, #F00); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#852126, #F00); /* Standard syntax (must be last) */
+}
+
+#bottom {
+    text-align:center;
+    font-size:14px;
+    color:#00FFFF;
+    background-color:
+    vertical-align:middle;
+    display:table;
+    height:5%;
+    width:100%;
+    border:3px;
+    background: -webkit-linear-gradient(#852126, #F00); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#852126, #F00); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#852126, #F00); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#852126, #F00); /* Standard syntax (must be last) */    
+}
+
+#iframe_a {
+    border:0px;
+    padding:0px;
+    mergin:0px;
+}
+</style>
+
+<script>
+
+</script>
+
+<body class="w3-animate-opacity">
+<nav class="w3-sidenav w3-card-2 w3-theme w3-collapse w3-animate-left" style="width:250px;" id="mySidenav">
+    <div class="w3-container w3-border-bottom w3-theme-d3">
+        <span onclick="w3_close('')" class="w3-closenav w3-right w3-xlarge">X</span>
+        <br>
+        <div class="w3-padding w3-center">
+            <img class="w3-round" src="images/119ci.png" alt="avatar" style="width:50%">
+        </div>
+    </div>
+    <a onclick="w3_close(this)" name="신고하기" class="w3-xlarge w3-border-bottom" href="wgps.asp" target="iframe_a"><i class="fa fa-globe"></i> 신고하기</a>
+    <a onclick="w3_close(this)" name="응급처치법" class="w3-xlarge w3-border-bottom" href="wgcpr.asp" target="iframe_a"><i class="fa fa fa-heartbeat"></i> 응급처치법</a>
+    <a onclick="w3_close(this)" name="상황별대처법" class="w3-xlarge w3-border-bottom" href="wgcase.asp" target="iframe_a"><i class="material-icons">&#xe002;</i> 상황별대처법</a>
+    <a onclick="w3_close(this)" name="병원약국검색" class="w3-xlarge w3-border-bottom" href="wghosp.html" target="iframe_a"><i class="material-icons">&#xe548;</i> 병원약국</a>
+    <a onclick="w3_close(this) , sendPhoto();" name="영상전송" class="w3-xlarge w3-border-bottom" ><i class="material-icons">&#xe412;</i> 영상전송</a>
+    <a onclick="w3_close(this) , getweatherinfo();" name="날씨보기" class="w3-xlarge w3-border-bottom" ><i class="material-icons">&#xe2bd;</i> 날씨</a>
+</nav>
+
+<div id="mtitile" class="w3-container w3-theme-d4" >
+    <h3 class="w3-text-shadow" style="margin-top:3px;margin-bottom:3px">
+    <i class="w3-opennav fa fa-bars" onclick="w3_open();"></i>
+    &nbsp;<b>강원<span class="w3-text-red w3-slim">119</span>신고</b><span id="titleadd" style="font-size:20px"></span></h3>
+</div>
+
+<div class="w3-container" onclick="w3_close()" id="maincontainer" style="height:100%" > 
+    <iframe src="wgps.asp" id="iframe_a" name="iframe_a" border=0px; width=100% height=100%></iframe>
+</div>
+
+<script>
+function w3_open() {
+    document.getElementById("mySidenav").style.display = "block";
+}
+function w3_close(str) {
+    if(str == '') {
+        document.getElementById("mySidenav").style.display = "none";
+    }
+    else {
+        document.getElementById("titleadd").innerHTML = "   "+str.name;
+        document.getElementById("mySidenav").style.display = "none";
+    }
+}
+
+function sendPhoto(){ // 영상전송 로직
+    document.getElementById('id02').style.display='block';
+}
+
+function leadingZeros(n, digits) {
+  var zero = '';
+  n = n.toString();
+
+  if (n.length < digits) {
+    for (i = 0; i < digits - n.length; i++)
+      zero += '0';
+  }
+  return zero + n;
+}
+
+function sendOX(){
+    if(localStorage.getItem("mykey") == null){
+        alert("먼저 신고를 한후 전송해주세요");
+        return;
+    }
+    var isphoto = document.getElementById('smallImage').src;
+    if(isphoto == "file:///android_asset/www/index.html") {
+        alert("전송할 사진이 없습니다.")
+        return;
+    }
+
+    if(confirm('전송하시겠습니까?')){
+        startUpload();
+    }
+    else{
+        return;
+    }
+}
+
+function startUpload(){ //사진전송 로직
+    var d = new Date();
+    var nowTime =
+        leadingZeros(d.getFullYear(), 4) + 
+        leadingZeros(d.getMonth() + 1, 2) + 
+        leadingZeros(d.getDate(), 2) + 
+        leadingZeros(d.getHours(), 2) + 
+        leadingZeros(d.getMinutes(), 2) + 
+        leadingZeros(d.getSeconds(), 2);
+    var str = nowTime + '_' + localStorage.getItem("tel_number");
+    //var url = "http://119survey.org/119app/w/photoSaveDB.asp?str=20170712";
+    var url = "http://119survey.org/119app/w/photoSaveDB.asp";
+    var imgg1 = document.getElementById("smallImage").src;
+    var imgBlob = new Blob([imgg1], {type:'image/jpeg'});
+
+    formdata = new FormData();
+    //formdata.append("file1", fileInput.files[0]);
+    formdata.append("file1", imgBlob);
+    formdata.append("file2", str);
+    formdata.append("file3", localStorage.getItem("mykey")); //신고한 아이디 
+    //formdata.append("file4", document.getElementById("messageTxt").value); //전달 메시지
+        
+    var progressBar = document.getElementById("progressBar");
+    var xhr = new XMLHttpRequest();
+
+    xhr.upload.onprogress = function(e) {
+        var percentComplete = (e.loaded / e.total) * 100;
+        progressBar.value = percentComplete;
+    };
+
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            alert("전송이 완료되었습니다.");
+        } else {
+            alert("전송에 실패했습니다.");
+        }
+    };
+    
+    xhr.onerror = function() {
+        alert("전송실패! 서버에 연결할수 없습니다.");
+    };
+    
+    progressBar.value = 0;
+    xhr.open("POST", url, true);
+    xhr.send(formdata);   
+}
+
+//사진전송 로직
+//var pictureSource = navigator.camera.PictureSourceType;
+
+document.addEventListener("deviceready",onDeviceReady,false);
+
+function onDeviceReady() {
+    pictureSource = navigator.camera.PictureSourceType;
+    //destinationType = navigator.camera.DestinationType;
+}
+
+function onPhotoDataSuccess(imageData) {
+    var smallImage = document.getElementById('smallImage');
+    smallImage.style.display = 'block';
+    smallImage.src = "data:image/jpeg;base64," + imageData;
+}
+
+//function onPhotoURISuccess(imageURI) {
+function onPhotoURISuccess(imageData) {    
+    var largeImage = document.getElementById('largeImage');
+    largeImage.style.display = 'block';
+    largeImage.src = "data:image/jpeg;base64," + imageData;
+    //largeImage.src = imageURI;
+    //largeImage.filename = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+}
+
+//사진촬영
+function takePhoto(){
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail,
+    {quality: 10, destinationType: Camera.DestinationType.DATA_URL,
+    sourceType: Camera.PictureSourceType.CAMERA});
+}
+
+//앨범 사진선택
+function getPhoto(){
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail,
+    //{ quality: 10, destinationType: Camera.DestinationType.FILE_URI,
+    {quality: 10, destinationType: Camera.DestinationType.DATA_URL,
+    sourceType: Camera.PictureSourceType.PHOTOLIBRARY });
+}
+
+function onFail(message) {
+  //alert('Failed because: ' + message);
+}
+
+function delContents() {
+    document.getElementById('smallImage').src = "";
+    document.getElementById('messageTxt').value = "";
+    document.getElementById('progressBar').value = "0";
+}
+
+</script>
+<div id="id01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+        <header class="w3-display-container w3-teal w3-center">
+            <i onclick="initweather();initdust();" class="fa fa-refresh w3-display-left w3-xlarge w3-padding-medium"></i>
+            <i class="material-icons w3-xxlarge w3-display-right w3-padding-small" style="font-size:36px" onclick = "document.getElementById('id01').style.display='none'" >close</i>
+
+            <h3>날 씨</h3>
+        </header>
+
+        <div id="timeNow" class="w3-center w3-large" style="padding-top: 0px">16시 현재 ,  맑음</div>
+
+        <div class="w3-cell-row">
+            <div class="w3-container w3-cell" style="padding-left: 0px">
+                <div class="w3-xlarge " style="float:right"><b id="temp">-14.5℃</b></div><br>
+                <img id="skypic" class="" style="float:right" src="images/c3/clear.png" width="140px"/>
+            </div>
+            <div class="w3-container w3-cell w3-samll" style="padding-left: 0px">
+                <div id="humiduty" class="">습도 45%</div>
+                <div id="rain" class="">강수량 5mm</div>
+                <div id="wind" class="">바람 5m/s</div>
+
+                <div class="w3-cell-row w3-small" style="padding-left: 0px">
+                    <div class="w3-container w3-cell " style="padding-left: 0">미세먼지<br>(pm10)</div>
+                    <div class="w3-container w3-cell ">초미세먼지<br>(pm2.5)</div>
+                </div>
+                <div class="w3-cell-row w3-small">
+                    <div id="pm10" class="w3-container w3-round w3-cell w3-black w3-center">22 좋음</div>
+                    <div id="pm25" class="w3-container w3-round w3-cell w3-blue w3-center">33 나쁨</div>
+                </div>
+          </div>
+        </div>
+
+        <footer class="w3-container w3-blue-grey ">
+            <div id="link" class="w3-panel w3-medium" style="padding-left: 0px">
+                <a id="dust" href="http://119survey.org/119app/w/wgcase/case11.asp" style="display:none"><i class="fa fa-question-circle w3-large" ></i>&nbsp;미세먼지수치가 높습니다. 미세먼지란?</a>
+                <a id="frostbite" href="http://119survey.org/119app/w/wgcase/case05.asp" style="display:none"><i class="fa fa-question-circle w3-large" ></i>&nbsp;겨울입니다. 동상, 저체온증 조심하세요</a>
+                <a id="humi" href="http://119survey.org/119app/w/wgcase/case14.asp" style="display: none"><i class="fa fa-question-circle w3-large" ></i>&nbsp;습도가 낮습니다. 산불을 조심하세요</a>
+                <a id="hotemper" href="http://119survey.org/119app/w/wgcase/case07.asp" style="display: none"><i class="fa fa-question-circle w3-large" ></i>&nbsp;기온과 습도가 높습니다. 폭염조심</a>
+                <a id="bigwind" href="http://119survey.org/119app/w/wgcase/case03.asp" style="display: none"><i class="fa fa-question-circle w3-large" ></i>&nbsp;강풍이 불고 있습니다. 강풍이 불때는?</a>
+            </div>
+        </footer>
+    </div>
+</div>
+
+
+<div id="id02" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+        <header class="w3-display-container w3-blue w3-center">
+            <i onclick="delContents();" class="fa fa-refresh w3-display-left w3-xlarge w3-padding-medium"></i>
+            <i class="material-icons w3-xxlarge w3-display-right w3-padding-small" style="font-size:36px" onclick = "document.getElementById('id02').style.display='none'" >close</i>
+            <h3>영상전송</h3>
+        </header>
+        <div class="w3-container">
+            <div class="w3-row w3-panel">다친 부위나 주변상황의 사진찍어서 119상황실에 전송합니다.</div>
+            <div class="w3-row w3-section w3-text-blue">
+                <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-camera"></i></div>
+                <div class="w3-col" style="width:30%"><button class="w3-button w3-border w3-blue" onclick="takePhoto();">사진촬영</button></div>
+            </div>
+            <div class="w3-row w3-section w3-text-blue">
+                <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-photo"></i></div>
+                <div class="w3-rest">
+                    <button class="w3-button w3-border w3-blue" onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">사진선택</button>
+                </div>
+            </div>
+
+            <div class="w3-row w3-section w3-text-blue" style="display:none">
+                <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-pencil"></i></div>
+                <div class="w3-rest">
+                    <input class="w3-input w3-border" id="messageTxt" type="text" placeholder="전달 메시지 입력">
+                </div>
+            </div>
+            <img style="display:none;width:60%;height:40%;" id="smallImage" src=""/>
+
+            <button class="w3-button w3-round w3-block w3-section w3-blue w3-ripple w3-padding w3-large" onclick="sendOX();">보내기</button>
+            <progress id="progressBar" style="width: 100%" max="100" value="0"/>
+        </div>
+
+        <footer class="w3-container w3-blue-grey">
+            <div id="link" class="w3-panel w3-medium" style="padding-left: 0px">
+            </div>
+        </footer>
+    </div>
+</div>
+
+<script> 
+// 초기 날씨정보 수집
+function getweatherinfo(){
+    document.getElementById('id01').style.display='block';
+    initdust();
+    initweather();
+}
+document.getElementById('id01').style.display='block';
+initdust();
+initweather();
+
+// 상황별 메뉴얼 표출 로직 
+var date = new Date(); // 계절변수 및 메뉴얼 표출
+var month = date.getMonth() + 1;
+if(12==month || 2==month || 1==month){  //겨율이면 동상관련 자료표출
+    document.getElementById('frostbite').style.display='block'; 
+}
+
+</script>
+
+
+</body>
+</html>
