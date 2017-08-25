@@ -171,7 +171,7 @@ function init()
 		//역지오코딩으로 주소찾기----------------------------------------------
 		geocoder.geocode({'latLng': mylatlan}, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				console.log(results)
+				//console.log(results)
 				var vaddress = results[0].formatted_address;
 				addArr = vaddress.split(' ');
 				localStorage.setItem("staddr1" , addArr[1]);
@@ -188,5 +188,18 @@ function init()
         document.getElementById('longitude').innerHTML = '경도 '+position.coords.longitude.toFixed(6);
         document.getElementById('altitude').innerHTML = '고도 : '+Number(position.coords.altitude).toFixed(0)+"m";
         document.getElementById('accuracy').innerHTML = '위치오차 : '+position.coords.accuracy.toFixed(0)+"m";
+        document.getElementById('aaccu').innerHTML = position.coords.accuracy.toFixed(0)+"m";
+
+        dataCheck();
+        accuCheck();
+/*
+        if(position.coords.accuracy < 200){
+        	document.getElementById('msg04').style.display = 'none';
+        	document.getElementById('msg03').style.display = 'none';
+	    	document.getElementById('confirmOk').classList.remove('w3-grey');
+	    	document.getElementById('confirmOk').classList.add('w3-green');
+        	//document.getElementById('confirmOk').onclick = sendata;
+        }
+*/        
     }		
 }  

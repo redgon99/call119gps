@@ -18,7 +18,7 @@ function getTmPointFromWgs84(key, y, x, callback) {
     url += '&y='+y;
     url += '&toCoord=TM';
     url += '&output=json';
-    console.log(url);
+    //console.log(url);
 
 	var xmlhttp;
 	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -50,7 +50,7 @@ function getNearbyMsrstn(key, my, mx, callback)  {
         '&numOfRows='+999+
         '&_returnType=json';
 
-        console.log(key)
+        //console.log(key)
 
     var xmlhttp;
     if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -79,7 +79,7 @@ function getMsrstnAcctoRltmMesureDnsty(key, stationName, callback) {
         '&numOfRows='+999+
         '&_returnType=json';
 
-        console.log(url)
+        //console.log(url)
     var xmlhttp;
     if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
         xmlhttp = new XMLHttpRequest();
@@ -103,13 +103,13 @@ function getPm10Info(lat, long) {
 
         var data = JSON.parse(data);
 
-        console.log(data);
+        //console.log(data);
         var key = '%2BZq7dxKT0cfFmKH%2FR4tzVOPbDXvAARBc2Zz2EZuZzvYa4zlJahyfz07VutJrxsQRDZirz3WTHQxo15GtdGSlww%3D%3D';
         //getNearbyMsrstn(key, data.y, data.x, function (err, data) {
         getNearbyMsrstn(key, data.y, data.x, function (data) {
 
             var ret = JSON.parse(data);
-            console.log(ret);
+            //console.log(ret);
             //var stationname = ret.response.body.items.item[0].stationname;
             var stationname = ret.list[0].stationName;
             var addr = ret.list[0].addr
@@ -121,7 +121,7 @@ function getPm10Info(lat, long) {
             //console.log(stationname);
             getMsrstnAcctoRltmMesureDnsty(key, stationname, function (data) {
                 var ret = JSON.parse(data);
-                console.log(ret)
+                //console.log(ret)
                 var pm10value = ret.list[0].pm10Value; 
                 var pm10Grade = ret.list[0].pm10Grade1h;
                 switch(pm10Grade*1){

@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <head>
 <script> // 접속핸드폰 언어에 따른 해당 언어페이지 호출
+var firstCnt = 0;
 var lang = navigator.language;
+var cbx;
+var infoOk, pnumOk, pdataOk, accuOk;
+var s_addr;
+var s_lat;
+var s_lon;
+var s_accu;
+var coordi;
+var s_sender = "A";
+var s_tel
+
 lang = lang.substr(0,2);
-//alert(lang);
 
 if(lang == 'en') {
 //	alert('english phone');	
@@ -20,8 +30,12 @@ else if(lang == 'zh'){
 <meta name="viewport" charset="euc-kr" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>강원119신고앱</title>
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
 <link rel="apple-touch-icon" href="/icon/ios_wclip.png">
 <link rel="shorcut icon" href="/icon/and_wclip.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_jXQ_1DZ1EHwam8xBI95g8Qq1hcOQNbI" async defer></script>
 <script src="js/geo_app.js" charset='euc-kr'></script>
 <script> //----구글 어날리틱스 코드
@@ -34,97 +48,133 @@ else if(lang == 'zh'){
 </script>
 
 <script type="text/javascript">
-var userAgent = navigator.userAgent.toLowerCase(); // 접속 핸드폰 정보
-var phonemodel; 
 
-// 모바일 홈페이지 바로가기 링크 생성 
-if(userAgent.match('iphone')) { 
-    document.write('<link rel="apple-touch-icon" href="/icon/ios_wclip.png" />')
-	phonemodel = 'iphone';
-} else if(userAgent.match('ipad')) { 
-    document.write('<link rel="apple-touch-icon" sizes="72*72" href="/icon/ios_wclip.png" />') 
-} else if(userAgent.match('ipod')) { 
-    document.write('<link rel="apple-touch-icon" href="/icon/ios_wclip.png" />') 
-} else if(userAgent.match('android')) { 
-    document.write('<link rel="shortcut icon" href="/icon/and_wclip.png" />') 
-	phonemodel = 'android';
-} 
 function reloadpage(){
 	document.location.reload();
 }
-function sendata() {
+
+function telCheck(){ //전화번호 체크
 	var tel_number = localStorage.getItem("tel_number"); //webstorage를 이용한 전화번호 캐시읽기
-	//alert("ws is"+tel_number);
-	if (tel_number == null) {  // 캐시된 전화번호가 없으면 입력창 실행
-		var s_tel = prompt("귀하의 휴대전화번호를 입력해주세요 119상황실에서 연락드립니다.");	
-		localStorage.setItem("tel_number", s_tel);
-		//alert(s_tel);
+	if (tel_number == null || tel_number == "") {  // 캐시된 전화번호가 없으면 입력창 실행
+		document.getElementById('msg02').innerHTML = '<i class="fa fa-warning"></i>' + ' 전화번호를 입력해주세요';
+		document.getElementById('inputPnum').style.display = 'block';
+		document.getElementById('confirmOk').onclick = '';
+		pnumOk = 0;
 	}
 	else {
-		s_tel=tel_number;		
+		s_tel = tel_number;
+		pnumOk = 1
 	}
-	//localStorage.setItem("tel_number", "01050944525");
-	//alert(s_tel);
-	//localStorage.removeItem("tel_number");
-	
-	//var s_tel = '010-0000-0000';
-	var s_addr = document.getElementById('addr').innerHTML.substring(5,50);	
-	var s_lat = document.getElementById('latitude').innerHTML.substring(7,20);
-	var s_lon = document.getElementById('longitude').innerHTML.substring(3,20);
-	var s_accu = document.getElementById('accuracy').innerHTML.substring(7,10);
-	//var get = new HttpGet("wlocDB.asp?tel="+s_tel+"&addr="+s_addr+"&lon="+s_lon+"&lat="+s_lat+"&accu="+s_accu+"");
-	//var exchange = httpClient.get("http://www.example.com" );
-	var coordi = s_lat * s_lon;
-	var s_sender = "A"
 
-	if(coordi==0) {
-		alert("좌표정보가 없습니다. 잠시후 다시 시도해 주세요");
-		return;
+	if(firstCnt > 0){
+		//alert('second check tel')
+		lastCheck();
 	}
-	
-	accu = s_accu.replace("m","");
-	//alert(accu);
-	
+}
+
+function infoChecked(){ //정보제공 체크
+    cbx = document.getElementById('infoCheck').checked;
+    localStorage.setItem("infoCheck",cbx);
+    if(cbx == true){
+    	document.getElementById('msg01').style.display = 'none';
+    	infoOk = 1
+    }
+    if(cbx == false){
+    	document.getElementById('msg01').style.display = 'block';
+    	document.getElementById('msg01').innerHTML = '<i class="fa fa-warning"></i>' + ' 정보제공에 동의해 주세요';
+		infoOk = 0
+    }
+
+	if(firstCnt > 0){
+		lastCheck();
+	}
+}
+
+function dataCheck(){ //좌표유무 체크
+	s_lat = document.getElementById('latitude').innerHTML.substring(7,20);
+	s_lon = document.getElementById('longitude').innerHTML.substring(3,20);
+	//s_lat = 0
+
+	coordi = s_lat * s_lon; //좌표정보가 없으면
+
+	if(coordi == 0) { //좌표정보가 없으면 안내메시지 표출
+		document.getElementById('msg03').style.display = 'block';
+		document.getElementById('confirmOk').onclick = '';
+		pdataOk = 0
+	}
+	else{
+		document.getElementById('msg03').style.display = 'none';
+		pdataOk = 1
+	}
+	if(firstCnt > 0){ // 마지막 조건 체크
+		lastCheck();
+	}
+}
+
+function accuCheck(){ // 
+	s_accu = document.getElementById('accuracy').innerHTML.substring(7,10);
+
+	if(s_accu > 200){ //오차반경이 200미터 이상이면 표출
+		document.getElementById('msg04').style.display = 'block';
+		accuOk = 0
+	}
+	else{
+		document.getElementById('msg04').style.display = 'none';
+		accuOk = 1
+	}
+
+	if(firstCnt > 0){
+		//alert('second check pdata')
+		lastCheck();
+	}
+}
+
+function call119(){
+	document.getElementById('id01').style.display = "block";
+	infoChecked(); // 
+	telCheck();
+	dataCheck();
+	lastCheck();
+
+	firstCnt  =  ++firstCnt
+}
+
+function lastCheck(){ // 전송조건 마지막 체크
+	var checkSum = infoOk + pnumOk + pdataOk + accuOk;
+	if(checkSum == 4) {
+    	document.getElementById('confirmOk').classList.remove('w3-grey');
+    	document.getElementById('confirmOk').classList.add('w3-green');
+    	document.getElementById('confirmOk').onclick = sendata;
+	}
+	else{
+    	document.getElementById('confirmOk').classList.remove('w3-green');
+    	document.getElementById('confirmOk').classList.add('w3-grey');
+    	document.getElementById('confirmOk').onclick = '';
+	}
+}
+
+function sendata() { //데이터 전송
+	s_addr = document.getElementById('addr').innerHTML.substring(5,50);
+	s_lat = document.getElementById('latitude').innerHTML.substring(7,20);
+	s_lon = document.getElementById('longitude').innerHTML.substring(3,20);
+	s_accu = document.getElementById('accuracy').innerHTML.substring(7,10);
+
+	//alert('sendata')
 	var url1 = 'https://119survey.org/119app/w/wlocDBB.asp?tel='+s_tel+'&addr='+s_addr+'&lon='+s_lon+'&lat='+s_lat+'&accu='+s_accu+'&s_sender='+s_sender;
 	var url2 = 'https://119survey.org/119app/w/reskey.asp';
-	if(accu > 200) {
-		if(confirm("위치오차가 너무 큽니다. 그래도 전송하시겠습니까? 전송하게 되면 개인정보제공에 동의하는 것으로 간주합니다.")){
-			//window.open(url1+s_tel+'&addr='+s_addr+'&lon='+s_lon+'&lat='+s_lat+'&accu='+s_accu+'&s_sender='+s_sender,'window');
-			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.onreadystatechange=function() {
-			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				alert('전송이 완료되었습니다.')
-				//alert(xmlhttp.responseText);
-				localStorage.setItem("mykey", xmlhttp.responseText);
-				}
-			}
-			xmlhttp.open("GET", url1, true)
-			xmlhttp.send();
-			return;
-		}
-		else{
-			return;
-		}
-	}
-	
-	if(confirm("전송하게 되면 개인정보제공에 동의하는 것으로 간주합니다. 전송하시겠습니까?")){	
-		//window.open(url1+s_tel+'&addr='+s_addr+'&lon='+s_lon+'&lat='+s_lat+'&accu='+s_accu+'&s_sender='+s_sender,'window');
-
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			alert('전송이 완료되었습니다.')
+			alert('신고가 완료되었습니다.')
 			//alert(xmlhttp.responseText);
 			localStorage.setItem("mykey", xmlhttp.responseText);
+			document.getElementById('id01').style.display = 'none';
 			}
 		}
 		xmlhttp.open("GET", url1, true)
-		xmlhttp.send();	
-	}
-	else{
-		return;
-	}
+		xmlhttp.send();
 }
+
 </script>
 
 <style type="text/css">
@@ -139,20 +189,8 @@ color:#666666;
 .float_style {
     float: left;
 }
-#title {
-	text-align:center;
-	font-size:large;
-	color:#00FFFF;
-	display:table;	
-	height:6%;
-	width:100%;
-	border:3px;
-    background: -webkit-linear-gradient(#852126, #F00); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(#852126, #F00); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(#852126, #F00); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(#852126, #F00); /* Standard syntax (must be last) */
-}
-#intitle, #inbottom, #inreloadpage, #insend{
+
+#inreloadpage, #insend{
 	display:table-cell;
 	vertical-align:middle;
 }
@@ -167,19 +205,22 @@ color:#666666;
 #message01 {
 	color:#FF0;
 	background-color:#000;
+	background-color:#424242;
 	font-size:x-large;	
-	vertical-align:middle;	
+	padding-left: 5px 
 }
 #message02 {  
 	height:5%;
 	color:#FF0;
 	background-color:#000;
+	background-color:#424242;
 	font-size:20px;
+	padding-left: 5px 
 }
 
 #map_canvas {
 	width:100%;
-	height:55%;
+	height:65%;
 }
 
 #send {
@@ -194,22 +235,6 @@ color:#666666;
     background: -moz-linear-gradient(#33FF66, #3C6); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#33FF66, #3C6); /* Standard syntax (must be last) */
 }
-
-#bottom {
-	text-align:center;
-	font-size:14px;
-	color:#00FFFF;
-	background-color:
-	vertical-align:middle;
-	display:table;
-	height:5%;
-	width:100%;
-	border:3px;
-    background: -webkit-linear-gradient(#852126, #F00); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(#852126, #F00); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(#852126, #F00); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(#852126, #F00); /* Standard syntax (must be last) */	
-}
 #reloadpage {
 	font-size:larger;
 	width:100%;
@@ -221,20 +246,11 @@ color:#666666;
     background: linear-gradient(#33FF66, #3C6); /* Standard syntax (must be last) */
 }
 
-#float_camera {
-	display:scroll;
-	position:fixed;
-	top:10px;
-	right:10px;
-}
-
-
 </style>
-
 </head>
 
 <body>
-<div id="title" align="center"><h2 id="intitle"><b>강원119신고</b></h2></div>
+
 <div id="addr">주소</div>
 <div id="latitude" class="float_style">위도</div>
 <div id="space" class="float_style">&nbsp;/&nbsp;</div>
@@ -244,10 +260,75 @@ color:#666666;
 <strong><mark><div id="accuracy">위치오차</div></mark></strong>
 <div id="message01">알림메시지</div>
 <div id="message02">알림메시지</div>
-<div id="send" onClick="sendata();"><h1 id="insend" class="w3-text-bold"><b>119에 신고하기</b></h1></div>
+<div id="send" onClick="call119();"><h1 id="insend" class="w3-text-bold"><b>119에 신고하기</b></h1></div>
 <div id="map_canvas"></div>
 <img id="gpsonImage" height="auto" width="100%" style="align-content:center" hidden="">
 <div id="reloadpage" onClick="reloadpage();" hidden=""><p id="inreloadpage">GPS를 켰으면 여기를 터치하여 다시 열기</p></div>
-<div id="bottom"><h3 id="inbottom">강 원 도 소 방 본 부</h3></div>
+
+<!-- 전화번호 수정  모달 -->
+<div id="id01" class="w3-modal">
+    <div class="w3-modal-content w3-card-4">
+        <header class="w3-display-container w3-theme-d1 w3-center">
+            <i class="material-icons w3-xxlarge w3-display-right w3-padding-small" style="font-size:36px" onclick = "document.getElementById('id01').style.display='none'" >close</i>
+            <h3>신고하기</h3>
+        </header>
+
+        <div class="w3-container">
+        	<div id="msg01" style="display: none"><i class="fa fa-warning"></i></div>
+            <div class="w3-bar w3-border">
+                <p class="w3-bar-item">개인정보 및 위치정보 제공에 동의</p>
+                <input id="infoCheck" onclick="infoChecked()" class="w3-bar-item w3-check w3-green" type="checkbox">
+            </div>
+
+            <div id="msg02"></div>
+            <div id="inputPnum" class="w3-text-blue" style="display: none">
+                <input class="w3-input  w3-border w3-bar-item" id="myphoneNumber" onchange="savePnum()" type="text" style="font-size: 20px" placeholder="전화번호 입력">
+            </div>
+
+            <div id="msg03" class="w3-red" style="display: none; padding: 3px"><p><i class="fa fa-warning"></i> 좌표정보가 없습니다. 잠시후 다시 시도해주세요</p>
+            </div>
+            <div id="msg04" class="w3-red" style="display: none; padding: 3px"><p><i class="fa fa-warning"></i>위치오차가 큽니다. (현재오차 반경: <span id="aaccu"></span>)
+            	<br>정확한 위치가 아닐수 있으니 정확한 위치정보를 수신할 때까지 기다려 주세요 <br>GPS가 꺼져있다면 켜주시고 하늘이 보이는 곳으로 이동해주세요</p>
+            </div>
+            <div id="confirm" class="w3-cell-row" style="padding: 10px">
+            	<div id="confirmOk" class="w3-container w3-cell w3-green w3-xlarge w3-round w3-center"><p>확 인</p></div>
+            	<div>&nbsp;&nbsp;</div>
+            	<div class="w3-container w3-cell w3-red w3-xlarge w3-round w3-center" onclick="document.getElementById('id01').style.display = 'none'"><p>취 소</p></div>
+            </div>
+        </div>
+
+        <footer class="w3-container w3-theme-d1">
+            <div id="link" class="w3-panel w3-medium" style="padding-left: 0px">
+            </div>
+        </footer>
+    </div>
+</div><!--모달 종료-->
+
+<script>
+function savePnum(){
+	localStorage.setItem('tel_number',document.getElementById('myphoneNumber').value);
+	document.getElementById('msg02').style.display = 'none';
+	document.getElementById('inputPnum').style.display = 'none';
+	s_tel = document.getElementById('myphoneNumber').value;
+	pnumOk = 1
+
+	if(firstCnt > 0){
+		alert('second check')
+		lastCheck();
+	}
+}
+
+//정보제공 동의 값을 읽어서 체크컨트롤에 적용
+cbx = localStorage.getItem("infoCheck")
+if(cbx == 'true'){
+    //alert("true")
+    document.getElementById('infoCheck').checked = true;
+}
+else{
+    document.getElementById('infoCheck').checked = false;   
+}
+
+</script>
+
 </body>
 </html>

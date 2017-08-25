@@ -6,6 +6,7 @@ var app = {
 
     onDeviceReady: function() {
         //this.receivedEvent('deviceready');
+        //alert('index.js')
         keepscreenon.enable();  //화면 켜기
         window.plugins.orientationLock.lock("portrait")  //화면화전 고정(landscape)
         cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
@@ -19,6 +20,8 @@ var app = {
         }, function(error){
             alert("위치정보를 사용할 수 없습니다.");
         });
+        //백그라운드 모드 활성화
+        //cordova.plugins.backgroundMode.enable();
         watchPosition();
     },
 

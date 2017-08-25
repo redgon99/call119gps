@@ -14,7 +14,6 @@ function openpage(str){
 }
 </script>
 
-
 <style type="text/css">
 *, #maincontainer {
     margin: 0px;
@@ -27,17 +26,12 @@ html, body {
 .float_style {
     float: left;
 }
-#float_camera {
-	display:scroll;
-	position:fixed;
-	top:10px;
-	right:10px;
-}
 
 </style>
 </head>
 
 <body class="w3-animate-opacity">
+
 <div class="w3-container w3-large w3-theme-d1" id="maincontainer">
 	<button id="cpr01" onclick="openpage(this);" class="w3-btn-block w3-left-align w3-border w3-theme-l4">심폐소생술-성인CPR</button>
 	<button id="cpr02" onclick="openpage(this);" class="w3-btn-block w3-left-align w3-border w3-theme-l3">심폐소생술-하임리히</button>

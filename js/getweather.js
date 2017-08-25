@@ -116,14 +116,14 @@ function dfs_xy_conv(code, v1, v2) {
 // dfs_xy_conv
 
 function xml2jsonCurrentWth(nx, ny){
-    console.log(nx);
+    //console.log(nx);
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth()+1;
     var yyyy = today.getFullYear();
     var hours = today.getHours();
     var minutes = today.getMinutes();
-    console.log("time " + minutes)
+    //console.log("time " + minutes)
 
     if(minutes < 30){
         // 30분보다 작으면 한시간 전 값
@@ -159,7 +159,7 @@ function xml2jsonCurrentWth(nx, ny){
     fileName += "&nx=" + _nx + "&ny=" + _ny;
     fileName += "&pageNo=1&numOfRows=10";
     fileName += "&_type=json";
-    console.log(fileName);
+    //console.log(fileName);
 
     var xmlhttp;
     if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -173,7 +173,7 @@ function xml2jsonCurrentWth(nx, ny){
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var tt = xmlhttp.responseText;
             //  alert(tt);
-              console.log(tt);
+              //console.log(tt);
             var obj = JSON.parse(tt);
             //document.getElementById("timeNow").innerHTML = obj.response.body.items.item[4].baseTime.toString().substr(0,2) + '시 현재, ';
             var temp = obj.response.body.items.item[5].obsrValue;

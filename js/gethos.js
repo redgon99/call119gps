@@ -27,6 +27,8 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
         nowMin = '0' + nowMin;
     }
     var nowTime = nowHour.toString() + nowMin.toString();
+    //nowTime = '1300'
+    //console.log(nowTime)
 
     var url = 'http://119survey.org/119app/w/res.asp';
     //var url = 'res.asp';
@@ -37,7 +39,7 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
     url += '&str5='+str5;
     url += '&str6='+str6;
     url += '&str7='+str7;
-    console.log(url);
+    //console.log(url);
 
 	var xmlhttp;
 	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -52,7 +54,7 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
 			var data = xmlhttp.responseText;
             //document.getElementById('hosTable').innerHTML = data;
             //callback(data);
-            //alert(data);
+            alert(data);
             var strData = data.split('|');
             var strName = strData[1].split('^');
             var strAddr = strData[2].split('^');
@@ -92,7 +94,7 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
             var mylatlan = new google.maps.LatLng(str3, str4);
             var mapOptions = {
                 center: mylatlan,
-                zoom:zlevel,
+                zoom:14,
                 scaleControl: true,
                 streetViewControl: false,
                 gestureHandling: 'greedy',
@@ -110,7 +112,7 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
                 fillOpacity: 0.15,
                 map: map,
                 center: mylatlan,
-                radius: cradius
+                radius: 1000
                 //radius: 100
             });
 
@@ -199,6 +201,11 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
                         '<p><b>TEL</b> : ' + strTel[idxStr] + '  ' + '<a href="tel:' + strTel[idxStr] + '">전화 걸기</a>' + '</p>'+
                         '<p><b>근무시간</b> : ' + strStime[idxStr] + '~' + strCtime[idxStr] + '</p>'+
                         '<p><b>직선거리</b> : ' + DDist + '</p>'+
+                        '<div>' +
+                        '<img onclick="kakaonavi('+ "'" + strName[idxStr] + "','" + strLat[idxStr] + "','" + strLon[idxStr] + "'" + ')"' +
+                        ' src="https://dev.kakao.com/assets/img/about/buttons/navi/kakaonavi_btn_medium.png" width="20%">' + 
+                        '<br>' + '<b>길안내</b>' +
+                        '</div>' +
                         '</div>'+
                         '</div>';
 
@@ -218,6 +225,9 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
                     if(duty_flag == 1){ // 근무시간이 아니면 글자색을 회색으로 표출
                         document.getElementById('icontent').style.color = 'grey';
                     }
+
+
+
                 });
                 document.getElementById('spinIcon').style.display = "none"; //스피너 종료
 
@@ -227,4 +237,30 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
 	xmlhttp.open("GET",url, true);
 	xmlhttp.send();
     localStorage.setItem("stext",'');
+}
+
+//길안내 카카오네비 연동
+function kakaonavi(phname,xCoor,yCoor){
+    //alert(phname + xCoor + yCoor)
+    url = "https://119survey.org/119app/w/navi.asp"
+    url = url + "?phname=" + "'" + phname + "'"
+    //url = url + "?phname=" + phname +
+    url = url + '&xCoor=' + xCoor
+    url = url + '&yCoor=' + yCoor
+    //console.log(url)
+    window.open(url)
+}
+
+function kakaoNavi(phname,xCoor,yCoor){
+    //alert('adsfasdf');
+    // 사용할 앱의 JavaScript 키를 설정해 주세요.
+    Kakao.init('80a32a394e1978a52dfe542d105ccb1f');
+    // 카카오 로그인 버튼을 생성합니다.
+    Kakao.Navi.start({
+        name: phname,
+        x: yCoor,
+        y: xCoor,
+        coordType: 'wgs84'
+    });
+
 }

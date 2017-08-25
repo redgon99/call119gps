@@ -114,13 +114,13 @@ function init()
 			break;
   		case accunum >= 20 :
 		 	document.getElementById("message01").innerHTML = ' 完成了精确定位您确认.';
-		 	document.getElementById("message02").innerHTML = ' 请选择下面的江原119报警'按钮';
+		 	document.getElementById("message02").innerHTML = ' 请选择下面的江原119报警 按钮';
 //		 	document.getElementById("aaa").innerHTML = '报警119';
 			document.getElementById("send").style.color="#4C4C4C";
 			break;
   		case accunum < 20 :
 		 	document.getElementById("message01").innerHTML = ' 精确的位置确认了!';
-		 	document.getElementById("message02").innerHTML = ' 请选择下面的江原119报警'按钮';
+		 	document.getElementById("message02").innerHTML = ' 请选择下面的江原119报警 按钮';
 //		 	document.getElementById("aaa").innerHTML = '报警119';
 //		 	document.getElementById("aaa").style.color="#33FF66";
 			document.getElementById("send").style.color="black";

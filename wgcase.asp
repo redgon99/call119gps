@@ -20,8 +20,8 @@ function openpage(str){
     padding: 0px;
 }
 html, body { 
-height: 100%;
-color:#666666;
+	height: 90%;
+	color:#666666;
 }
 .float_style {
     float: left;
