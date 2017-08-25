@@ -54,7 +54,7 @@ function getData(str1, str2, str3, str4, str5, str6, str7) {
 			var data = xmlhttp.responseText;
             //document.getElementById('hosTable').innerHTML = data;
             //callback(data);
-            alert(data);
+            //alert(data);
             var strData = data.split('|');
             var strName = strData[1].split('^');
             var strAddr = strData[2].split('^');
