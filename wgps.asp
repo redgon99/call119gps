@@ -313,7 +313,7 @@ function savePnum(){
 	pnumOk = 1
 
 	if(firstCnt > 0){
-		alert('second check')
+		//alert('second check')
 		lastCheck();
 	}
 }
