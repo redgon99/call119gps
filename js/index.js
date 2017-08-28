@@ -5,23 +5,38 @@ var app = {
     },
 
     onDeviceReady: function() {
-        //this.receivedEvent('deviceready');
-        //alert('index.js')
+
         keepscreenon.enable();  //화면 켜기
+
         window.plugins.orientationLock.lock("portrait")  //화면화전 고정(landscape)
-        cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-            var str = enabled;
-            //alert(str)
-            if(str == false){
-                alert("GPS가 꺼져있습니다. GPS(위치정보)를 켜주세요");
-                cordova.plugins.diagnostic.switchToLocationSettings();
+
+        //GPS 활성화
+        cordova.plugins.locationAccuracy.canRequest(function(canRequest){
+            if(canRequest){
+                cordova.plugins.locationAccuracy.request(function (success){
+                    //document.getElementById('message01').innerHTML = 'GPS수신중...'
+                }, function (error){
+                    alert('위치정보(GPS)가 켜져있어야 정확한 위치를 확인 할 수있습니다. 위치정보(GPS)를 켜주세요');
+                    cordova.plugins.diagnostic.switchToLocationSettings();
+                }, cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);
             }
-            console.log("GPS location is " + (enabled ? "enabled" : "disabled"));
-        }, function(error){
-            alert("위치정보를 사용할 수 없습니다.");
         });
-        //백그라운드 모드 활성화
-        //cordova.plugins.backgroundMode.enable();
+
+        //Wifi 활성화
+        cordova.plugins.diagnostic.isWifiEnabled(function(enabled){
+            var str = enabled
+            if(str == false){
+                cordova.plugins.diagnostic.setWifiState(function(){
+                    console.log("Wifi was enabled");
+                }, function(error){
+                    console.error("The following error occurred: "+error);
+                },
+                true);
+            }
+        }, function(error){
+            console.error("The following error occurred: "+error);
+        });
+
         watchPosition();
     },
 
@@ -33,7 +48,7 @@ function watchPosition() {
 
     var options = {
         maximumAge: 3600000,
-        timeout: 3000,
+        timeout: 60000,
         enableHighAccuracy: true,
     }
 

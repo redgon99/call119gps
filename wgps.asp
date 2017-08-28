@@ -38,6 +38,7 @@ else if(lang == 'zh'){
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_jXQ_1DZ1EHwam8xBI95g8Qq1hcOQNbI" async defer></script>
 <script src="js/geo_app.js" charset='euc-kr'></script>
+
 <script> //----구글 어날리틱스 코드
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -258,8 +259,8 @@ color:#666666;
 <div id="altitude" class="float_style">고도</div>
 <div id="space" class="float_style">&nbsp;/&nbsp;</div>
 <strong><mark><div id="accuracy">위치오차</div></mark></strong>
-<div id="message01">알림메시지</div>
-<div id="message02">알림메시지</div>
+<div id="message01">알림메시지1</div>
+<div id="message02">알림메시지2</div>
 <div id="send" onClick="call119();"><h1 id="insend" class="w3-text-bold"><b>119에 신고하기</b></h1></div>
 <div id="map_canvas"></div>
 <img id="gpsonImage" height="auto" width="100%" style="align-content:center" hidden="">

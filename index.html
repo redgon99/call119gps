@@ -66,7 +66,7 @@ var cbx;
     <a onclick="w3_close(this)" name="신고하기" class="w3-xlarge w3-border-bottom" href="wgps.asp" target="iframe_a"><i class="fa fa-globe"></i> 신고하기</a>
     <a onclick="w3_close(this)" name="응급처치법" class="w3-xlarge w3-border-bottom" href="wgcpr.asp" target="iframe_a"><i class="fa fa fa-heartbeat"></i> 응급처치법</a>
     <a onclick="w3_close(this)" name="상황별대처법" class="w3-xlarge w3-border-bottom" href="wgcase.asp" target="iframe_a"><i class="material-icons">&#xe002;</i> 상황별대처법</a>
-    <a onclick="w3_close(this)" name="병원약국검색" class="w3-xlarge w3-border-bottom" href="wghosp.html" target="iframe_a"><i class="material-icons">&#xe548;</i> 병원약국</a>
+    <a onclick="w3_close(this)" name="병원약국검색" class="w3-xlarge w3-border-bottom" href="wghosp.html" target="iframe_a"><i class="material-icons">&#xe548;</i> 병원약국안내</a>
     <a onclick="w3_close(this) , sendPhoto();" name="영상전송" class="w3-xlarge w3-border-bottom" ><i class="material-icons">&#xe412;</i> 영상전송</a>
     <a onclick="w3_close(this) , getweatherinfo();" name="날씨보기" class="w3-xlarge w3-border-bottom" ><i class="material-icons">&#xe2bd;</i> 날씨</a>
     <a onclick="w3_close(this) , getSetting();infoChecked();" name="번호수정" class="w3-xlarge w3-border-bottom" ><i class="material-icons">&#xe8b8;</i> 설정</a>
@@ -431,7 +431,7 @@ function getweatherinfo(){
 }
 
 //초기 화면 표출 모달//////////////////////////////////////////////////////////////////////////////////////
-document.getElementById('id01').style.display='block';
+//document.getElementById('id01').style.display='block';
 initdust();
 initweather();
 
