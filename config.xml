@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.call119gps" version="1.9.3.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.call119gps" version="1.9.4" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>강원119신고</name>
     <description>
         119신고자의 위치정보를 상황실에 전송
@@ -107,4 +107,5 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="com.mediamatrixdoo.keepscreenon" spec="git://github.com/zoxxx/PhoneGap-KeepScreenOn-plugin.git" />
+    <plugin name="cordova-plugin-request-location-accuracy" spec="~2.2.1" />
 </widget>

@@ -173,7 +173,7 @@ function xml2jsonCurrentWth(nx, ny){
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var tt = xmlhttp.responseText;
             //  alert(tt);
-              //console.log(tt);
+            //console.log(tt);
             var obj = JSON.parse(tt);
             //document.getElementById("timeNow").innerHTML = obj.response.body.items.item[4].baseTime.toString().substr(0,2) + '시 현재, ';
             var temp = obj.response.body.items.item[5].obsrValue;

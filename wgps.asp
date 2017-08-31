@@ -38,6 +38,9 @@ else if(lang == 'zh'){
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_jXQ_1DZ1EHwam8xBI95g8Qq1hcOQNbI" async defer></script>
 <script src="js/geo_app.js" charset='euc-kr'></script>
+<script src="js/index.js"></script>
+<script src="js/CallNumber.js"></script>
+
 
 <script> //----구글 어날리틱스 코드
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -173,7 +176,26 @@ function sendata() { //데이터 전송
 			}
 		}
 		xmlhttp.open("GET", url1, true)
-		xmlhttp.send();
+		//xmlhttp.send();
+		makecall119()
+}
+
+function makecall119() { // 119에 전화걸기
+    alert('make a phone call to onther person who very handsome guy look like me')
+    var number = "0331234567890";
+    window.plugins.CallNumber.callNumber(onSuccess, onError, number, bypassAppChooser);
+
+    function onSuccess(result){
+        console.log("Success:"+result);
+    }
+
+    function onError(result) {
+        console.log("Error:"+result);
+    }
+
+    function bypassAppChooser(){
+        console.log('bypassAppChooser');
+    }
 }
 
 </script>
